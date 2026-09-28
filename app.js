@@ -16,8 +16,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 const sha = process.env.SHA || process.env.COMMIT_SHA || process.env.GIT_SHA || process.env.RENDER_GIT_COMMIT || 'local';
 const commit = sha.slice(0, 7);
 
+console.log(Object.keys(process.env).filter(k => /SHA|COMMIT|GIT|RENDER/i.test(k)));
 function render(res, { filter = 'All', error = null, status = 200 }) {
-  console.log(Object.keys(process.env).filter(k => /SHA|COMMIT|GIT|RENDER/i.test(k)));
   res.status(status).send(page({
     complaints: store.all(filter),
     counts: store.stats(),
