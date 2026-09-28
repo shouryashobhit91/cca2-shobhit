@@ -8,7 +8,7 @@ deployed automatically by GitHub Actions.
 - **Live application:** _add your Render URL here_
 - **Pipeline runs:** _add your repository's Actions tab URL here_
 
-## What it does
+## What it does.
 
 - Raise a complaint against a room, choosing a category and describing the fault.
 - Input is validated on the server: the room must look like `204` or `B-204`,
