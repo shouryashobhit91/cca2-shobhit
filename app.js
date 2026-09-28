@@ -13,10 +13,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Render sets RENDER_GIT_COMMIT on every deploy; GIT_SHA is passed in by the
 // Docker build so the container shows the same id when run locally.
-const sha = process.env.SHA || process.env.COMMIT_SHA || process.env.GIT_SHA || process.env.RENDER_GIT_COMMIT || 'local';
+const sha = process.env.RENDER_GIT_COMMIT || process.env.GIT_SHA || process.env.SHA || process.env.COMMIT_SHA || 'local';
 const commit = sha.slice(0, 7);
 
-console.log(Object.keys(process.env).filter(k => /SHA|COMMIT|GIT|RENDER/i.test(k)));
 function render(res, { filter = 'All', error = null, status = 200 }) {
   res.status(status).send(page({
     complaints: store.all(filter),
