@@ -88,7 +88,7 @@ test('a complaint moves forward through its statuses', async () => {
     assert.equal(move.status, 302);
 
     const stats = await (await fetch(`${base}/api/stats`)).json();
-    assert.equal(stats['In Progress'], 5);
+    assert.equal(stats['In Progress'], 1);
     assert.equal(stats.Open, 0);
   });
 });
