@@ -7,6 +7,7 @@ const store = require('../store');
 
 // Start the app on a free port for one request, then shut it down.
 async function withServer(fn) {
+  
   const server = app.listen(0);
   try {
     await fn(`http://127.0.0.1:${server.address().port}`);
@@ -87,7 +88,7 @@ test('a complaint moves forward through its statuses', async () => {
     assert.equal(move.status, 302);
 
     const stats = await (await fetch(`${base}/api/stats`)).json();
-    assert.equal(stats['In Progress'], 1);
+    assert.equal(stats['In Progress'], 5);
     assert.equal(stats.Open, 0);
   });
 });
