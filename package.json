@@ -1,0 +1,21 @@
+{
+  "name": "hostel-complaint-register",
+  "version": "1.0.0",
+  "description": "Hostel Complaint Register - a maintenance complaint tracker with a CI/CD pipeline",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.14.0"
+  },
+  "license": "MIT"
+}

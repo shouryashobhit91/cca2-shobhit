@@ -1,0 +1,68 @@
+name: CI/CD
+
+# Every push and every pull request is checked. Only a push to main that has
+# passed all three earlier jobs is allowed to reach the live site.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: 1 · Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: 2 · Test
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  build:
+    name: 3 · Build image
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build --build-arg GIT_SHA=${{ github.sha }} -t hostel-complaint-register .
+
+      - name: Smoke test the container
+        run: |
+          docker run -d -p 3000:3000 --name smoke hostel-complaint-register
+          for i in $(seq 1 10); do
+            if curl -fsS http://localhost:3000/health; then echo "" && exit 0; fi
+            sleep 2
+          done
+          echo "health check never responded"
+          docker logs smoke
+          exit 1
+
+  deploy:
+    name: 4 · Deploy
+    needs: build
+    # Pull requests are checked but never deployed.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        # The hook URL is a secret; anyone holding it could deploy this service.
+        # &ref pins the deploy to the exact commit that passed the jobs above.
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}&ref=${{ github.sha }}"
