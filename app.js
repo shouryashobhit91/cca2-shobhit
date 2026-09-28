@@ -15,7 +15,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Docker build so the container shows the same id when run locally.
 const sha = process.env.RENDER_GIT_COMMIT || process.env.GIT_SHA || process.env.SHA || process.env.COMMIT_SHA || 'local';
 const commit = sha.slice(0, 7);
-
+console.log('commit vars:', JSON.stringify({
+  RENDER_GIT_COMMIT: process.env.RENDER_GIT_COMMIT,
+  GIT_SHA: process.env.GIT_SHA,
+  SHA: process.env.SHA,
+  COMMIT_SHA: process.env.COMMIT_SHA,
+}));
 function render(res, { filter = 'All', error = null, status = 200 }) {
   res.status(status).send(page({
     complaints: store.all(filter),
